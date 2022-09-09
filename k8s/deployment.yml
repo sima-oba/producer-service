@@ -27,8 +27,8 @@ spec:
               name: producer-conf
         resources:
           limits:
-            memory: "1024Mi"
-            cpu: "500m"
+            memory: "512Mi"
+            cpu: "300m"
       - name: producer-kafka
         image: $REGISTRY-docker.pkg.dev/$PROJECT_ID/sima/producer:$IMAGE_TAG
         imagePullPolicy: Always
