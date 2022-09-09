@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: producer
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: producer-rest
+  template:
+    metadata:
+      labels:
+        app: producer-rest
+    spec:
+      containers:
+      - name: producer-rest
+        image: $REGISTRY-docker.pkg.dev/$PROJECT_ID/sima/producer:$IMAGE_TAG
+        imagePullPolicy: Always
+        args: ["start-gunicorn-server", "--workers", "16"]
+        ports:
+        - name: rest
+          containerPort: 5000
+        envFrom:
+          - secretRef:
+              name: producer-secret
+          - configMapRef:
+              name: producer-conf
+        resources:
+          limits:
+            memory: "1024Mi"
+            cpu: "500m"
+      - name: producer-kafka
+        image: $REGISTRY-docker.pkg.dev/$PROJECT_ID/sima/producer:$IMAGE_TAG
+        imagePullPolicy: Always
+        args: ["start-kafka-consumer"]
+        envFrom:
+          - secretRef:
+              name: producer-secret
+          - configMapRef:
+              name: producer-conf
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "50m"
