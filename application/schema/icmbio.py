@@ -1,4 +1,4 @@
-from marshmallow import Schema, fields, validate
+from marshmallow import Schema, fields, validate, EXCLUDE, post_load
 
 GEO_TYPES = ['Point', 'Polygon', 'MultiPolygon', 'Line', 'MultiLine']
 
@@ -64,4 +64,42 @@ class ConservationUnitSchema(Schema):
     legal_act = fields.String(missing=None)
     last_update = fields.DateTime(format='%d/%m/%Y', missing=None)
     original_name = fields.String(missing=None)
+    geometry = fields.Nested(_GeometrySchema, required=True)
+
+
+class AtlanticForestSchema(Schema):
+    class Meta:
+        unknown = EXCLUDE
+    imported_id = fields.String(data_key='imported_id_0', required=True)
+    geometry = fields.Nested(_GeometrySchema, required=True)
+
+
+class BiomeSchema(Schema):
+    class Meta:
+        unknown = EXCLUDE
+    imported_id = fields.String(data_key='ID_0', required=True)
+    name = fields.String(required=True)
+    geometry = fields.Nested(_GeometrySchema, required=True)
+
+
+class MatopibaSchema(Schema):
+    class Meta:
+        unknown = EXCLUDE
+    state = fields.String(data_key='estado', required=True)
+    geometry = fields.Nested(_GeometrySchema, required=True)
+
+    @post_load
+    def transform(self, data: dict, **_):
+        data['imported_id'] = data['state']
+        return data
+
+
+class VegetationSchema(Schema):
+    class Meta:
+        unknown = EXCLUDE
+    imported_id = fields.String(data_key='GID0', required=True)
+    name = fields.String(data_key='NOME1', required=True)
+    type = fields.String(data_key='TIPO2', required=True)
+    description = fields.String(data_key='DESC_TIP3', required=True)
+    source = fields.String(data_key='FONTE5', required=True)
     geometry = fields.Nested(_GeometrySchema, required=True)

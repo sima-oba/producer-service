@@ -2,11 +2,15 @@ from application.schema import (
     CitySchema,
     FarmSchema,
     StudySchema,
+    AtlanticForestSchema,
     GeoParkSchema,
     EcoCorridorsSchema,
     GeoSitesSchema,
     IndigenousLandSchema,
-    ConservationUnitSchema
+    ConservationUnitSchema,
+    BiomeSchema,
+    MatopibaSchema,
+    VegetationSchema
 )
 from domain.service import (
     CityService,
@@ -78,10 +82,30 @@ def start_consumer(config):
         IndigenousLandSchema(),
         icmbio_svc.save_indigenousland
     )
+    atlantic_forest_consumer = Consumer(
+        AtlanticForestSchema(),
+        icmbio_svc.save_atlantic_forest
+    )
+    biome_consumer = Consumer(
+        BiomeSchema(),
+        icmbio_svc.save_biome
+    )
+    matopiba_consumer = Consumer(
+        MatopibaSchema(),
+        icmbio_svc.save_matopiba
+    )
+    vegetation_consumer = Consumer(
+        VegetationSchema(),
+        icmbio_svc.save_vegetation
+    )
+
+    group.add(atlantic_forest_consumer, 'ICMBIO_ATLANTIC_FOREST_LAW')
+    group.add(biome_consumer, 'BIOME')
+    group.add(matopiba_consumer, 'MATOPIBA')
+    group.add(vegetation_consumer, 'VEGETATION')
     group.add(geopark_consumer, 'ICMBIO_GEOPARK')
     group.add(consv_unit_consumer, 'ICMBIO_CONSERVATION_UNIT')
     group.add(ecocorridor_consumer, 'ICMBIO_CORRIDOR')
     group.add(geosite_consumer, 'ICMBIO_SITE')
     group.add(indigenousland_consumer, 'ICMBIO_INDIGENOUS_LAND')
-
     group.wait()

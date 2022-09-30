@@ -10,11 +10,15 @@ from .study import Study
 from .sicar import Sicar, SicarFarm
 from .import_info import ImportInfo
 from .icmbio import (
+    AtlanticForest,
+    Biome,
     Geopark,
     EcoCorridors,
     GeoSites,
     IndigenousLand,
-    ConservationUnit
+    ConservationUnit,
+    Matopiba,
+    Vegetation
 )
 
 
@@ -34,9 +38,13 @@ __all__ = [
     'Sicar',
     'SicarFarm',
     'ImportInfo',
+    'AtlanticForest',
+    'Biome',
     'Geopark',
     'ConservationUnit',
     'EcoCorridors',
     'GeoSites',
-    'IndigenousLand'
+    'IndigenousLand',
+    'Matopiba',
+    'Vegetation'
 ]

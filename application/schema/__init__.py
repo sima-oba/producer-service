@@ -9,11 +9,15 @@ from .sicar import SicarAreaSchema, SicarFarmSchema, SicarQuery
 from .owner import OwnerSchema
 from .study import StudySchema, StudyQuery
 from .icmbio import (
+    AtlanticForestSchema,
     GeoParkSchema,
     EcoCorridorsSchema,
     GeoSitesSchema,
     IndigenousLandSchema,
-    ConservationUnitSchema
+    ConservationUnitSchema,
+    BiomeSchema,
+    MatopibaSchema,
+    VegetationSchema
 )
 
 
@@ -31,9 +35,13 @@ __all__ = [
     'StudySchema',
     'SicarFarmSchema',
     'StudyQuery',
+    'AtlanticForestSchema',
     'GeoParkSchema',
     'EcoCorridorsSchema',
     'GeoSitesSchema',
     'IndigenousLandSchema',
-    'ConservationUnitSchema'
+    'ConservationUnitSchema',
+    'BiomeSchema',
+    'MatopibaSchema',
+    'VegetationSchema'
 ]
