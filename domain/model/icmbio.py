@@ -6,6 +6,19 @@ from .entity import Entity
 
 
 @dataclass
+class AtlanticForest(Entity):
+    imported_id: str
+    geometry: dict
+
+
+@dataclass
+class Biome(Entity):
+    imported_id: str
+    name: str
+    geometry: dict
+
+
+@dataclass
 class Geopark(Entity):
     imported_id: str
     type: Optional[str]
@@ -66,4 +79,21 @@ class ConservationUnit(Entity):
     legal_act: Optional[str]
     last_update: Optional[datetime]
     original_name: Optional[str]
+    geometry: dict
+
+
+@dataclass
+class Matopiba(Entity):
+    imported_id: str
+    state: str
+    geometry: dict
+
+
+@dataclass
+class Vegetation(Entity):
+    imported_id: str
+    name: str
+    type: str
+    description: str
+    source: str
     geometry: dict

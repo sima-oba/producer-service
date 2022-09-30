@@ -1,11 +1,15 @@
 from pymongo.database import Database
 from typing import List, Optional
 from domain.model import (
+    AtlanticForest,
+    Biome,
     Geopark,
     EcoCorridors,
     GeoSites,
     IndigenousLand,
-    ConservationUnit
+    ConservationUnit,
+    Matopiba,
+    Vegetation
 )
 from domain.model.entity import Entity
 from domain.repository import IIcmbioRepository
@@ -14,11 +18,15 @@ from domain.repository import IIcmbioRepository
 class IcmbioRepository(IIcmbioRepository):
     def __init__(self, db: Database):
         self._collections = {
+            AtlanticForest: db.get_collection('atlantic_forest'),
+            Biome: db.get_collection('biome'),
             Geopark: db.get_collection('geopark'),
             EcoCorridors: db.get_collection('ecocorridors'),
             GeoSites: db.get_collection('geosites'),
             IndigenousLand: db.get_collection('indigenousland'),
-            ConservationUnit: db.get_collection('conservation_unit')
+            ConservationUnit: db.get_collection('conservation_unit'),
+            Matopiba: db.get_collection('matopiba'),
+            Vegetation: db.get_collection('vegetation')
         }
 
         self._collections[ConservationUnit].create_index('category')

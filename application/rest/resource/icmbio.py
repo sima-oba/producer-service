@@ -35,4 +35,24 @@ def get_blueprint(service: IcmbioService) -> Blueprint:
         filter = request.args.to_dict()
         return geojson.make_geojson_response(service.search_consvunit(filter))
 
+    @bp.get('/atlantic_forest/geojson')
+    @cache_for(days=30)
+    def search_atlantic_forest_geojson():
+        return geojson.make_geojson_response(service.search_atlantic_forest())
+
+    @bp.get('/biomes/geojson')
+    @cache_for(days=30)
+    def search_biomes_geojson():
+        return geojson.make_geojson_response(service.search_biomes())
+
+    @bp.get('/matopiba/geojson')
+    @cache_for(days=30)
+    def search_matopiba_geojson():
+        return geojson.make_geojson_response(service.search_matopiba())
+
+    @bp.get('/vegetation/geojson')
+    @cache_for(days=30)
+    def search_vegetation_geojson():
+        return geojson.make_geojson_response(service.search_vegetation())
+
     return bp
