@@ -107,7 +107,7 @@ def get_blueprint(auth: Authorization, service: FarmService) -> Blueprint:
                 owners.append(owner_data)
             except ValidationError as e:
                 log.warning(f'Skipped owner {owner_data}. Reason: {e}')
-            except KeyError:
+            except (AttributeError, KeyError):
                 log.warning(f'Missing attribute in row {row.to_dict()}')
 
         for _, row in df.iterrows():
@@ -117,7 +117,7 @@ def get_blueprint(auth: Authorization, service: FarmService) -> Blueprint:
                 farms.append(farm_data)
             except ValidationError as e:
                 log.warning(f'Skipped farm {farm_data}. Reason: {e}')
-            except KeyError:
+            except (AttributeError, KeyError):
                 log.warning(f'Missing attribute in row {row.to_dict()}')
 
         imported_info = service.import_data(owners, farms)
