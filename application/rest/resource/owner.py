@@ -101,22 +101,24 @@ def get_blueprint(auth: Authorization, service: FarmService) -> Blueprint:
         farms = []
 
         for _, row in df.iterrows():
-            owner_data = _extract_owner(row.to_dict())
-
             try:
+                owner_data = _extract_owner(row.to_dict())
                 owner_data = owner_schema.load(owner_data)
                 owners.append(owner_data)
             except ValidationError as e:
                 log.warning(f'Skipped owner {owner_data}. Reason: {e}')
+            except KeyError:
+                log.warning(f'Missing attribute in row {row.to_dict()}')
 
         for _, row in df.iterrows():
-            farm_data = _extract_farm(row.to_dict())
-
             try:
+                farm_data = _extract_farm(row.to_dict())
                 farm_data = farm_schema.load(farm_data)
                 farms.append(farm_data)
             except ValidationError as e:
                 log.warning(f'Skipped farm {farm_data}. Reason: {e}')
+            except KeyError:
+                log.warning(f'Missing attribute in row {row.to_dict()}')
 
         imported_info = service.import_data(owners, farms)
         return jsonify(imported_info)
