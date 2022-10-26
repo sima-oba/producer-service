@@ -97,9 +97,9 @@ class MatopibaSchema(Schema):
 class VegetationSchema(Schema):
     class Meta:
         unknown = EXCLUDE
-    imported_id = fields.String(data_key='GID0', required=True)
-    name = fields.String(data_key='NOME1', required=True)
-    type = fields.String(data_key='TIPO2', required=True)
-    description = fields.String(data_key='DESC_TIP3', required=True)
-    source = fields.String(data_key='FONTE5', required=True)
+    imported_id = fields.String(required=True)
+    name = fields.String(required=True)
+    type = fields.String(required=True)
+    description = fields.String(required=True)
+    source = fields.String(required=True)
     geometry = fields.Nested(_GeometrySchema, required=True)
