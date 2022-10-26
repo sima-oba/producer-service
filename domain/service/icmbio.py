@@ -115,7 +115,7 @@ class IcmbioService:
 
     def save_atlantic_forest(self, data: dict) -> AtlanticForest:
         forest = self._repo.find_by_imported_id(
-            AtlanticForest, data['imported_id_0']
+            AtlanticForest, data['imported_id']
         )
 
         if forest is None:
