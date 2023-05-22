@@ -916,18 +916,18 @@ class CalculatorHelper:
             self._gee_scenery_4_per_bag = 0
 
     def _calc_baseline_c_stock(self):
-        if not self._data.biome_1_coverage:
-            self._data.biome_1 = 0
-
-        if not self._data.biome_2_coverage:
-            self._data.biome_2 = 0
-
-        if not self._data.biome_3_coverage:
-            self._data.biome_3 = 0
-
-        biomes_average = statistics.mean(
-            [self._data.biome_1, self._data.biome_2, self._data.biome_3]
-        )
+        bio = [
+            self._data.biome_1,
+            self._data.biome_2,
+            self._data.biome_3
+        ]
+        cov = [
+            self._data.biome_1_coverage,
+            self._data.biome_2_coverage,
+            self._data.biome_3_coverage
+        ]
+        bio_with_cov = [bio for bio, cov in zip(bio, cov) if cov]
+        biomes_average = statistics.mean(bio_with_cov) if bio_with_cov else 0
 
         self._rl_c_stock = self._data.rl * biomes_average
         self._app_c_stock = self._data.app * biomes_average
