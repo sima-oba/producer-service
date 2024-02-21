@@ -57,7 +57,7 @@ def get_blueprint(auth: Authorization, service: FarmService) -> Blueprint:
     
     @bp.post('/farms/geojson')
     @auth.require_role(Role.READ_PROPERTIES)
-    def farms_geojson():
+    def farms_large_geojson():
         data = request.get_json()
         ids = data['ids']
 
