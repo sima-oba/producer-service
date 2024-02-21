@@ -54,6 +54,21 @@ def get_blueprint(auth: Authorization, service: FarmService) -> Blueprint:
             farms = service.get_farms(ids)
 
         return geojson.make_geojson_response(farms)
+    
+    @bp.post('/farms/geojson')
+    @auth.require_role(Role.READ_PROPERTIES)
+    def farms_geojson():
+        data = request.get_json()
+        ids = data['ids']
+
+        if ids is None:
+            query = filter_by_owner()
+            farms = service.search_farms(query)
+        else:
+            ids = [_id for _id in ids.split(',')]
+            farms = service.get_farms(ids)
+
+        return geojson.make_geojson_response(farms)
 
     @bp.get('/farms/crops')
     @auth.require_role(Role.READ_PROPERTIES)
