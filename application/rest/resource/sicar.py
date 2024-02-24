@@ -69,6 +69,17 @@ def get_blueprint(service: SicarService) -> Blueprint:
         sicar = service.search_areas(query)
         return geojson.make_geojson_response(sicar)
 
+    @bp.get('/sicar/areas2')
+    @cache_for(hours=2)
+    def get_areas2_geojson():
+        query = sicar_query.load(request.args)
+
+        for k, v in query.items():
+            query[k] = {'$in': ','.split(v)}
+
+        sicar = service.search_areas(query)
+        return geojson.make_geojson_response(sicar)
+
     @bp.get('/sicar/farms')
     @cache_for(hours=2)
     def get_farms_geojson():
