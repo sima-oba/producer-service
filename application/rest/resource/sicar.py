@@ -75,7 +75,7 @@ def get_blueprint(service: SicarService) -> Blueprint:
         query = sicar_query.load(request.args)
 
         for k, v in query.items():
-            query[k] = {'$in': ','.split(v)}
+            query[k] = {'$in': v.split(',')}
 
         sicar = service.search_areas(query)
         return geojson.make_geojson_response(sicar)
