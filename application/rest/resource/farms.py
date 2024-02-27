@@ -91,6 +91,9 @@ def get_blueprint(auth: Authorization, service: FarmService) -> Blueprint:
         df = DataFrame(data=farms)
         df = df.loc[:, df.columns != 'geometry']
         df = df.loc[:, df.columns != 'signature_date']
+        df = df.loc[:, df.columns != 'created_at']
+        df = df.loc[:, df.columns != 'updated_at']
+        
         tmp_file = NamedTemporaryFile(prefix='farms_', suffix='.xlsx')
         df.to_excel(tmp_file.name, index=False)
         download_time = datetime.utcnow().strftime('%Y-%m-%d_%M-%S')
