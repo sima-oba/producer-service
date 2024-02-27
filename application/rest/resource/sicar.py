@@ -2,12 +2,14 @@
 import geopandas
 import logging
 import patoolib
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, send_file
 from flask_cachecontrol import cache_for
 from fiona.errors import DriverError
 from marshmallow import Schema, ValidationError
 from shapely.geometry import mapping
 from typing import List
+from pandas import DataFrame
+from tempfile import NamedTemporaryFile
 
 from application.schema import SicarAreaSchema, SicarFarmSchema, SicarQuery
 from domain.service import SicarService
@@ -25,6 +27,8 @@ AREAS_OF_INTEREST = (
     'RESERVA_LEGAL',
     'VEGETACAO_NATIVA'
 )
+
+MIME_XLSX = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
 
 log = logging.getLogger(__name__)
 
@@ -79,6 +83,30 @@ def get_blueprint(service: SicarService) -> Blueprint:
 
         sicar = service.search_areas(query)
         return geojson.make_geojson_response(sicar)
+    
+    @bp.get('/sicar/excel')
+    @cache_for(hours=2)
+    def get_areas_excel():
+        query = sicar_query.load(request.args)
+
+        for k, v in query.items():
+            query[k] = {'$in': v.split(',')}
+
+        sicar = service.search_areas(query)
+        
+        df = DataFrame(data=sicar)
+        df = df.loc[:, df.columns != 'geometry']
+        df = df.loc[:, df.columns != 'created_at']
+        df = df.loc[:, df.columns != 'updated_at']
+        
+        tmp_file = NamedTemporaryFile(prefix='sicar_', suffix='.xlsx')
+        df.to_excel(tmp_file.name, index=False)
+
+        return send_file(
+            tmp_file,
+            mimetype=MIME_XLSX,
+            download_name=(f'sicar.xlsx')
+        )
 
     @bp.get('/sicar/farms')
     @cache_for(hours=2)
