@@ -1,10 +1,15 @@
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, jsonify, request, send_file
+from pandas import DataFrame
+from tempfile import NamedTemporaryFile
+from datetime import datetime
 
 from application.rest.security import Authorization, Role
 from application.schema import FarmInfoSchema, FarmQuerySchema
 from domain.service import FarmService
 from .utils import geojson
 from . import constants
+
+MIME_XLSX = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
 
 
 def get_blueprint(auth: Authorization, service: FarmService) -> Blueprint:
@@ -54,7 +59,7 @@ def get_blueprint(auth: Authorization, service: FarmService) -> Blueprint:
             farms = service.get_farms(ids)
 
         return geojson.make_geojson_response(farms)
-    
+
     @bp.post('/farms/geojson')
     @auth.require_role(Role.READ_PROPERTIES)
     def farms_large_geojson():
@@ -69,6 +74,31 @@ def get_blueprint(auth: Authorization, service: FarmService) -> Blueprint:
             farms = service.get_farms(ids)
 
         return geojson.make_geojson_response(farms)
+
+    @bp.post('/farms/excel')
+    @auth.require_role(Role.READ_PROPERTIES)
+    def farms_excel():
+        data = request.get_json()
+        ids = data['ids']
+
+        if ids is None:
+            query = filter_by_owner()
+            farms = service.search_farms(query)
+        else:
+            ids = [_id for _id in ids.split(',')]
+            farms = service.get_farms(ids)
+
+        df = DataFrame(data=farms)
+        df = df.loc[:, df.columns != 'geometry']
+        tmp_file = NamedTemporaryFile(prefix='farms_', suffix='.xlsx')
+        df.to_excel(tmp_file.name, index=False)
+        download_time = datetime.utcnow().strftime('%Y-%m-%d_%M-%S')
+
+        return send_file(
+            tmp_file,
+            mimetype=MIME_XLSX,
+            download_name=(f'propriedades__{download_time}.xlsx')
+        )
 
     @bp.get('/farms/crops')
     @auth.require_role(Role.READ_PROPERTIES)
